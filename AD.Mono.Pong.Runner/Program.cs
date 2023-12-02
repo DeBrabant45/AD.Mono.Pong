@@ -1,3 +1,3 @@
 ﻿
-using var game = new AD.Mono.Pong.Runner.Game1();
+using var game = new AD.Mono.Pong.TestGame();
 game.Run();
