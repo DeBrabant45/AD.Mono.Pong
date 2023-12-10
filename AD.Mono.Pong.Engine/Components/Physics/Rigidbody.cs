@@ -29,6 +29,8 @@ public class Rigidbody : BaseComponent
 
     public int Center() => YPosition() + Height() / 2;
 
+    public Rectangle Body => _body;
+
     public override void Load()
     {
         _transform = Owner.GetComponent<Transform>();

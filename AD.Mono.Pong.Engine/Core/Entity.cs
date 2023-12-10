@@ -1,6 +1,5 @@
 ﻿using AD.Mono.Pong.Engine.Components;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -13,7 +12,7 @@ public class Entity : IEntity
     private readonly string _tag;
     private readonly List<IComponent> _components;
     private readonly GraphicsDeviceManager _graphicsDeviceManager; // ToDo: Remove after textures are put in place
-    private bool _isActive;
+    private bool _isActive = true;
 
     public Entity(string tag, GraphicsDeviceManager graphicsDeviceManager)
     {
@@ -24,6 +23,7 @@ public class Entity : IEntity
 
     public bool IsActive => _isActive;
     public string Tag => _tag;
+    public event Action<IEntity> OnCollision;
     public GraphicsDeviceManager GraphicsDeviceManager => _graphicsDeviceManager; // ToDo: Remove after textures are put in place
 
     public void Load()
@@ -75,5 +75,10 @@ public class Entity : IEntity
     public void Destroy()
     {
         _isActive = false;
+    }
+
+    public void OnCollisionTrigger(IEntity otherEntity)
+    {
+        OnCollision?.Invoke(otherEntity);
     }
 }
