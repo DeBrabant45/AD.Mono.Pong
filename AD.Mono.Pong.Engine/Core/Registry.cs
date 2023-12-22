@@ -12,7 +12,9 @@ public class Registry : ILoad, IUpdate, IRender
 		_entities = entities;
 	}
 
-	public void AddEntity(IEntity entity) => _entities.Add(entity);
+	public IList<IEntity> Entities => _entities;
+
+    public void AddEntity(IEntity entity) => _entities.Add(entity);
 
 	public void RemoveEntity(IEntity entity) => _entities.Remove(entity);
 

@@ -1,5 +1,4 @@
 ﻿using AD.Mono.Pong.Engine.Components;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -11,19 +10,16 @@ public class Entity : IEntity
 {
     private readonly string _tag;
     private readonly List<IComponent> _components;
-    private readonly GraphicsDeviceManager _graphicsDeviceManager; // ToDo: Remove after textures are put in place
     private bool _isActive = true;
 
-    public Entity(string tag, GraphicsDeviceManager graphicsDeviceManager)
+    public Entity(string tag)
     {
         _tag = tag;
         _components = new();
-        _graphicsDeviceManager = graphicsDeviceManager;
     }
 
     public bool IsActive => _isActive;
     public string Tag => _tag;
-    public GraphicsDeviceManager GraphicsDeviceManager => _graphicsDeviceManager; // ToDo: Remove after textures are put in place
 
     public void Load()
     {

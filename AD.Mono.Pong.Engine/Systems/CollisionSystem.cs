@@ -6,7 +6,7 @@ namespace AD.Mono.Pong.Engine.Systems;
 
 public class CollisionSystem
 {
-    public void CheckCollisions(List<IEntity> entities)
+    public void CheckCollisions(IList<IEntity> entities)
     {
         for (int i = 0; i < entities.Count; i++)
         {

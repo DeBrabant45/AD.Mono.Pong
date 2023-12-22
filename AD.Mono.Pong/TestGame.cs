@@ -1,10 +1,13 @@
-﻿using AD.Mono.Pong.Components;
-using AD.Mono.Pong.Engine.Components;
+﻿using AD.Mono.Pong.Engine.Components;
 using AD.Mono.Pong.Engine.Components.Graphics;
 using AD.Mono.Pong.Engine.Components.Physics;
 using AD.Mono.Pong.Engine.Core;
-using AD.Mono.Pong.Engine.Scenes;
+using AD.Mono.Pong.Engine.Factories;
 using AD.Mono.Pong.Engine.Systems;
+using AD.Mono.Pong.Factories.Ball;
+using AD.Mono.Pong.Factories.Bounds;
+using AD.Mono.Pong.Factories.Paddle;
+using AD.Mono.Pong.Factories.Wall;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -13,9 +16,10 @@ using System.Collections.Generic;
 namespace AD.Mono.Pong;
 public class TestGame : Game
 {
-    private GraphicsDeviceManager _graphics;
+    private readonly Registry _registry;
+    private readonly EntityFactory _entityFactory;
+    private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-    private List<IEntity> _entities;
     private CollisionSystem _collisionSystem = new();
 
     public TestGame()
@@ -25,45 +29,22 @@ public class TestGame : Game
         _graphics.PreferredBackBufferHeight = GameBounds.Height;
         IsMouseVisible = true;
 
-        //Todo: Move all of these into a factory
-        var leftPaddle = new Entity("LeftPaddle", _graphics);
-        leftPaddle.AddComponent<Transform>(new Transform(leftPaddle, new() { X = GameBounds.Width - 30, Y = GameBounds.Height / 2 }, new() { X = 20, Y = 100 }));
-        leftPaddle.AddComponent<Rigidbody>(new Rigidbody(leftPaddle));
-        //leftPaddle.AddComponent<PaddleMovement>(new PaddleMovement(leftPaddle));
-        leftPaddle.AddComponent<Sprite>(new Sprite(leftPaddle, Content, "LeftPaddle"));
+        _entityFactory = new PaddleFactory();
+        var leftPaddle = _entityFactory.Create(Content, _graphics, new() { X = GameBounds.Width - 30, Y = GameBounds.Height / 2 });
+        var rightPaddle = _entityFactory.Create(Content, _graphics, new() { X = 0 + 10, Y = GameBounds.Height / 2 });
 
-        var rightPaddle = new Entity("RightPaddle", _graphics);
-        rightPaddle.AddComponent<Transform>(new Transform(rightPaddle, new() { X = 0 + 10, Y = GameBounds.Height / 2 }, new() { X = 20, Y = 100 }));
-        rightPaddle.AddComponent<Rigidbody>(new Rigidbody(rightPaddle));
-        rightPaddle.AddComponent<Sprite>(new Sprite(rightPaddle, Content, "RightPaddle"));
+        _entityFactory = new BallFactory();
+        var ball = _entityFactory.Create(Content, _graphics, new() { X = GameBounds.Width / 2, Y = 200 });
 
-        var ball = new Entity("Ball", _graphics);
-        ball.AddComponent<Transform>(new Transform(ball, new() { X = GameBounds.Width / 2, Y = 200 }, new() { X = 10, Y = 10 }));
-        ball.AddComponent<Rigidbody>(new Rigidbody(ball));
-        ball.AddComponent<BallMovement>(new BallMovement(ball));
-        ball.AddComponent<Sprite>(new Sprite(ball, Content, "Ball"));
+        _entityFactory = new BoundsFactory();
+        var floor = _entityFactory.Create(Content, _graphics, new() { Y = GameBounds.Height - 10 });
+        var ceiling = _entityFactory.Create(Content, _graphics, new() { Y = -90 });
 
-        var floor = new Entity("Floor", _graphics);
-        floor.AddComponent<Transform>(new Transform(floor, new() { Y = GameBounds.Height - 10 }, new() { X = GameBounds.Width, Y = 100 }));
-        floor.AddComponent<Rigidbody>(new Rigidbody(floor));
-        floor.AddComponent<Sprite>(new Sprite(floor, Content, "Floor"));
+        _entityFactory = new WallFactory();
+        var leftWall = _entityFactory.Create(Content, _graphics, new() { X = GameBounds.Width - 2 });
+        var rightWall = _entityFactory.Create(Content, _graphics, new() { X = -18 });
 
-        var ceiling = new Entity("Ceiling", _graphics);
-        ceiling.AddComponent<Transform>(new Transform(ceiling, new() { Y = -90 }, new() { X = GameBounds.Width, Y = 100 }));
-        ceiling.AddComponent<Rigidbody>(new Rigidbody(ceiling));
-        ceiling.AddComponent<Sprite>(new Sprite(ceiling, Content, "Ceiling"));
-
-        var leftWall = new Entity("LeftWall", _graphics);
-        leftWall.AddComponent<Transform>(new Transform(leftPaddle, new() { X = GameBounds.Width - 2}, new() { X = 20, Y = GameBounds.Height }));
-        leftWall.AddComponent<Rigidbody>(new Rigidbody(leftWall));
-        leftWall.AddComponent<Sprite>(new Sprite(leftWall, Content, "LeftWall"));
-
-        var rightWall = new Entity("RightWall", _graphics);
-        rightWall.AddComponent<Transform>(new Transform(rightWall, new() { X = -18 }, new() { X = 20, Y = GameBounds.Height }));
-        rightWall.AddComponent<Rigidbody>(new Rigidbody(rightWall));
-        rightWall.AddComponent<Sprite>(new Sprite(rightWall, Content, "RightWall"));
-
-        _entities = new()
+        _registry = new(new List<IEntity>()
         {
             leftPaddle,
             rightPaddle,
@@ -72,7 +53,7 @@ public class TestGame : Game
             floor,
             rightWall,
             leftWall
-        };
+        });
     }
 
     protected override void Initialize()
@@ -83,7 +64,7 @@ public class TestGame : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        _entities.ForEach(e => { e.Load(); });
+        _registry.Load();
     }
 
     protected override void Update(GameTime gameTime)
@@ -92,8 +73,8 @@ public class TestGame : Game
             Exit();
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        _entities.ForEach(e => { e.Update(deltaTime); });
-        _collisionSystem.CheckCollisions(_entities);
+        _registry.Update(deltaTime);
+        _collisionSystem.CheckCollisions(_registry.Entities);
         base.Update(gameTime);
     }
 
@@ -101,7 +82,7 @@ public class TestGame : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
         _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
-        _entities.ForEach(e => { e.Render(_spriteBatch); });
+        _registry.Render(_spriteBatch);
         _spriteBatch.End();
         base.Draw(gameTime);
     }
