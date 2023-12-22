@@ -17,6 +17,8 @@ public class Rigidbody : BaseComponent
 
     }
 
+    public event Action<IEntity> OnCollision;
+
     public Vector2 Velocity { get => _velocity; set => _velocity = value; }
 
     public int Height() => _body.Height;
@@ -64,6 +66,14 @@ public class Rigidbody : BaseComponent
         MovePosition(velocity);
     }
 
+    public bool IsColliding(Rigidbody other)
+    {
+        if (other == null)
+            return false;
+
+        return Body.Intersects(other.Body);
+    }
+
     public void SetXPosition(int x) => _body.X = x;
 
     public void SetYPosition(int y) => _body.Y = y;
@@ -71,6 +81,11 @@ public class Rigidbody : BaseComponent
     public override void Update(float deltaTime)
     {
         _transform.Position = new Vector2(_body.X, _body.Y);
+    }
+
+    public void OnCollisionTrigger(IEntity otherEntity)
+    {
+        OnCollision?.Invoke(otherEntity);
     }
 }
 

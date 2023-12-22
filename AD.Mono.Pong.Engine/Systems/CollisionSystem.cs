@@ -1,6 +1,5 @@
 ﻿using AD.Mono.Pong.Engine.Components.Physics;
 using AD.Mono.Pong.Engine.Core;
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
 namespace AD.Mono.Pong.Engine.Systems;
@@ -12,23 +11,29 @@ public class CollisionSystem
         for (int i = 0; i < entities.Count; i++)
         {
             var entityA = entities[i];
-            var boundsA = GetCollisionBounds(entityA);
+            var entityARigidBody = GetRigidbody(entityA);
             for (int j = i + 1; j < entities.Count; j++)
             {
                 var entityB = entities[j];
-                var boundsB = GetCollisionBounds(entityB);
-                if (boundsA.Intersects(boundsB))
-                {
-                    entityA.OnCollisionTrigger(entityB);
-                    entityB.OnCollisionTrigger(entityA);
-                }
+                var entityBRigidBody = GetRigidbody(entityB);
+                if (entityARigidBody == null || entityBRigidBody == null)
+                    continue;
+
+                if (!entityARigidBody.IsColliding(entityBRigidBody))
+                    continue;
+
+                entityARigidBody.OnCollisionTrigger(entityB);
+                entityBRigidBody.OnCollisionTrigger(entityA);
             }
         }
     }
 
-    private Rectangle GetCollisionBounds(IEntity entity)
+    private Rigidbody? GetRigidbody(IEntity entity)
     {
         var rigidbody = entity.GetComponent<Rigidbody>();
-        return rigidbody.Body;
+        if (rigidbody == null)
+            return null;
+
+        return rigidbody;
     }
 }

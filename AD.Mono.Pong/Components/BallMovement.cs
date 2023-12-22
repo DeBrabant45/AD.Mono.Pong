@@ -10,8 +10,9 @@ public class BallMovement : BaseComponent
 {
     private Rigidbody _rigidbody;
     private Vector2 _velocity;
-    private float _speed = 15.0f;
+    private float _speed = 700.0f;
     private Random _random;
+    private float _deltaTime;
 
     public BallMovement(IEntity owner) 
         : base(owner)
@@ -23,12 +24,13 @@ public class BallMovement : BaseComponent
     {
         _rigidbody = Owner.GetComponent<Rigidbody>();
         _velocity = new(1, 0.1f);
-        Owner.OnCollision += HandleCollision;
+        _rigidbody.OnCollision += HandleCollision;
     }
 
     public override void Update(float deltaTime)
     {
-        float maxVelocity = 1.5f;
+        var maxVelocity = 1.5f;
+        _deltaTime = deltaTime;
         ClampVelocity(maxVelocity);
         Move();
     }
@@ -41,7 +43,7 @@ public class BallMovement : BaseComponent
 
     private void Move()
     {
-        _rigidbody.MovePosition(new() { X = _velocity.X * _speed, Y = _velocity.Y * _speed });
+        _rigidbody.MovePosition(new() { X = _velocity.X * _speed * _deltaTime, Y = _velocity.Y * _speed * _deltaTime });
     }
 
     public void HandleCollision(IEntity entity)

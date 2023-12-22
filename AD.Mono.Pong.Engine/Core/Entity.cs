@@ -23,7 +23,6 @@ public class Entity : IEntity
 
     public bool IsActive => _isActive;
     public string Tag => _tag;
-    public event Action<IEntity> OnCollision;
     public GraphicsDeviceManager GraphicsDeviceManager => _graphicsDeviceManager; // ToDo: Remove after textures are put in place
 
     public void Load()
@@ -75,10 +74,5 @@ public class Entity : IEntity
     public void Destroy()
     {
         _isActive = false;
-    }
-
-    public void OnCollisionTrigger(IEntity otherEntity)
-    {
-        OnCollision?.Invoke(otherEntity);
     }
 }
