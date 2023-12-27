@@ -20,9 +20,11 @@ public class TestGame : Game
 
     public TestGame()
     {
-        _graphics = new GraphicsDeviceManager(this);
-        _graphics.PreferredBackBufferWidth = GameBounds.Width;
-        _graphics.PreferredBackBufferHeight = GameBounds.Height;
+        _graphics = new GraphicsDeviceManager(this)
+        {
+            PreferredBackBufferWidth = GameBounds.Width,
+            PreferredBackBufferHeight = GameBounds.Height
+        };
         IsMouseVisible = true;
 
         _entityFactory = new PaddleFactory();
@@ -90,6 +92,6 @@ public class TestGame : Game
 
 public class GameBounds
 {
-    public static int Width = 1280;
-    public static int Height = 720;
+    public static readonly int Width = 1280;
+    public static readonly int Height = 720;
 }
