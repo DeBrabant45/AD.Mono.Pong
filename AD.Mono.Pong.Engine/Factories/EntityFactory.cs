@@ -12,5 +12,5 @@ public abstract class EntityFactory
         return entityProduction.Produce(content, deviceManager, position);
     }
 
-    public abstract IEntityProduction CreateProduction();
+    protected abstract IEntityProduction CreateProduction();
 }

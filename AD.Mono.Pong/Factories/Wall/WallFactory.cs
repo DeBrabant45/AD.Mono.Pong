@@ -4,7 +4,7 @@ namespace AD.Mono.Pong.Factories.Wall;
 
 public class WallFactory : EntityFactory
 {
-    public override IEntityProduction CreateProduction()
+    protected override IEntityProduction CreateProduction()
     {
         return new WallProduction();
     }

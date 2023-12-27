@@ -4,8 +4,20 @@ using System.Collections.Generic;
 
 namespace AD.Mono.Pong.Engine.Systems;
 
-public class CollisionSystem
+public class CollisionSystem : ISystem
 {
+    private IRegistry _registry;
+
+    public void Load(IRegistry registry)
+    {
+        _registry = registry;
+    }
+
+    public void Update(float deltaTime)
+    {
+        CheckCollisions(_registry.Entities);
+    }
+
     public void CheckCollisions(IList<IEntity> entities)
     {
         for (int i = 0; i < entities.Count; i++)

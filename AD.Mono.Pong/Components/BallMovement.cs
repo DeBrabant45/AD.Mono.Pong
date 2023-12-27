@@ -68,7 +68,7 @@ public class BallMovement : BaseComponent
 
     private void BoundsBounce(IEntity entity)
     {
-        if (entity.Tag != "Bounds")
+        if (!entity.Tag.Contains("Bounds"))
             return;
 
         _velocity.Y *= -CalculateRandomBounce();

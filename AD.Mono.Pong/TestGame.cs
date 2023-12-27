@@ -1,7 +1,4 @@
-﻿using AD.Mono.Pong.Engine.Components;
-using AD.Mono.Pong.Engine.Components.Graphics;
-using AD.Mono.Pong.Engine.Components.Physics;
-using AD.Mono.Pong.Engine.Core;
+﻿using AD.Mono.Pong.Engine.Core;
 using AD.Mono.Pong.Engine.Factories;
 using AD.Mono.Pong.Engine.Systems;
 using AD.Mono.Pong.Factories.Ball;
@@ -20,7 +17,6 @@ public class TestGame : Game
     private readonly EntityFactory _entityFactory;
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-    private CollisionSystem _collisionSystem = new();
 
     public TestGame()
     {
@@ -44,16 +40,21 @@ public class TestGame : Game
         var leftWall = _entityFactory.Create(Content, _graphics, new() { X = GameBounds.Width - 2 });
         var rightWall = _entityFactory.Create(Content, _graphics, new() { X = -18 });
 
-        _registry = new(new List<IEntity>()
-        {
-            leftPaddle,
-            rightPaddle,
-            ball,
-            ceiling,
-            floor,
-            rightWall,
-            leftWall
-        });
+        _registry = new(
+            new List<IEntity>()
+            {
+                leftPaddle,
+                rightPaddle,
+                ball,
+                ceiling,
+                floor,
+                rightWall,
+                leftWall
+            },
+            new List<ISystem>()
+            {
+                new CollisionSystem(),
+            });
     }
 
     protected override void Initialize()
@@ -74,7 +75,6 @@ public class TestGame : Game
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         _registry.Update(deltaTime);
-        _collisionSystem.CheckCollisions(_registry.Entities);
         base.Update(gameTime);
     }
 

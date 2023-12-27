@@ -4,7 +4,7 @@ namespace AD.Mono.Pong.Factories.Ball;
 
 public class BallFactory : EntityFactory
 {
-    public override IEntityProduction CreateProduction()
+    protected override IEntityProduction CreateProduction()
     {
         return new BallProduction();
     }
