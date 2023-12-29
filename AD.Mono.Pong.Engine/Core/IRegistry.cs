@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace AD.Mono.Pong.Engine.Core;
-public interface IRegistry : ILoad, IUpdate, IRender
+public interface IRegistry : ILoad, IUpdate, IRender, IUnload
 {
     IList<IEntity> Entities { get; }
     IList<ISystem> Systems { get; }

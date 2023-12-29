@@ -71,4 +71,15 @@ public class Entity : IEntity
     {
         _isActive = false;
     }
+
+    public void Unload()
+    {
+        foreach(var component in _components)
+        {
+            if(component is IUnload unloadableComponent)
+            {
+                unloadableComponent.Unload();
+            }
+        }
+    }
 }

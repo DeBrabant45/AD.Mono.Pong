@@ -1,7 +1,7 @@
 ﻿using AD.Mono.Pong.Engine.Core;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace AD.Mono.Pong.Engine.Scenes;
 
@@ -9,12 +9,14 @@ public abstract class BaseScene : ILoad, IUpdate, IRender, IUnload
 {
     private readonly int _index;
     private readonly ContentManager _contentManager;
+    private readonly SceneHandler _sceneHandler;
     protected Registry Registry;
-    private Texture2D _texture;
+    public event Action<BaseScene> OnSceneChange;
 
-    protected BaseScene(int index, ContentManager contentManager)
+    protected BaseScene(int index, SceneHandler sceneHandler, ContentManager contentManager)
     {
         _index = index;
+        _sceneHandler = sceneHandler;
         _contentManager = contentManager;
         // Create the Registry
             // Entity Factory
@@ -26,23 +28,23 @@ public abstract class BaseScene : ILoad, IUpdate, IRender, IUnload
 
     public void Load()
     {
-        //Registry.Load();
-        _texture = _contentManager.Load<Texture2D>("Title");
+        Registry.Load();
     }
 
     public void Update(float deltaTime)
     {
-        //Registry.Update(deltaTime);
+        Registry.Update(deltaTime);
     }
 
     public void Render(SpriteBatch spriteBatch)
     {
-        //Registry.Render(spriteBatch);
-        spriteBatch.Draw(_texture, Vector2.One, Color.White);
+        Registry.Render(spriteBatch);
     }
 
     public void Unload()
     {
         _contentManager.Unload();
     }
+
+
 }

@@ -1,10 +1,15 @@
 ﻿using AD.Mono.Pong.Engine.Core;
 using AD.Mono.Pong.Engine.Factories;
+using AD.Mono.Pong.Engine.StateMachines;
 using AD.Mono.Pong.Engine.Systems;
 using AD.Mono.Pong.Factories.Ball;
 using AD.Mono.Pong.Factories.Bounds;
 using AD.Mono.Pong.Factories.Paddle;
 using AD.Mono.Pong.Factories.Wall;
+using AD.Mono.Pong.GameStates;
+using AD.Mono.Pong.GameStates.MainMenu;
+using AD.Mono.Pong.GameStates.Play;
+using AD.Mono.Pong.GameStates.Splash;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -17,6 +22,7 @@ public class TestGame : Game
     private readonly EntityFactory _entityFactory;
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
+    private readonly GameStateMachine _gameStateMachine;
 
     public TestGame()
     {
@@ -42,6 +48,8 @@ public class TestGame : Game
         var leftWall = _entityFactory.Create(Content, _graphics, new() { X = GameBounds.Width - 2 });
         var rightWall = _entityFactory.Create(Content, _graphics, new() { X = -18 });
 
+        var leftWall1 = _entityFactory.Create(Content, _graphics, new() { X = GameBounds.Width - 2 });
+
         _registry = new(
             new List<IEntity>()
             {
@@ -57,6 +65,23 @@ public class TestGame : Game
             {
                 new CollisionSystem(),
             });
+
+        var registry = new Registry(
+            new List<IEntity>()
+            {
+                leftWall1
+            },
+            new List<ISystem>()
+            {
+                new CollisionSystem(),
+            });
+
+        _gameStateMachine = new ();
+        _gameStateMachine.AddStates(new List<IState> 
+        { 
+            new SplashState(_gameStateMachine, registry),
+            new PlayState(_gameStateMachine, _registry),
+        });
     }
 
     protected override void Initialize()
@@ -67,7 +92,12 @@ public class TestGame : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        _registry.Load();
+        _gameStateMachine.Load();
+    }
+
+    protected override void UnloadContent()
+    {
+        _gameStateMachine.Unload();
     }
 
     protected override void Update(GameTime gameTime)
@@ -76,7 +106,7 @@ public class TestGame : Game
             Exit();
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        _registry.Update(deltaTime);
+        _gameStateMachine.Update(deltaTime);
         base.Update(gameTime);
     }
 
@@ -84,7 +114,7 @@ public class TestGame : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
         _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
-        _registry.Render(_spriteBatch);
+        _gameStateMachine.Render(_spriteBatch);
         _spriteBatch.End();
         base.Draw(gameTime);
     }

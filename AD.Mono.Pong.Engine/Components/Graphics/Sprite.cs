@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AD.Mono.Pong.Engine.Components.Graphics;
 
-public class Sprite : BaseComponent, IRender
+public class Sprite : BaseComponent, IRender, IUnload
 {
     private readonly string _textureName;
     private readonly ContentManager _contentManager;
@@ -36,6 +36,11 @@ public class Sprite : BaseComponent, IRender
     public void Render(SpriteBatch spriteBatch)
     {
         DrawRectangle(spriteBatch, Color.White);
+    }
+
+    public void Unload()
+    {
+        _contentManager.Unload();
     }
 
     private void DrawRectangle(SpriteBatch spriteBatch, Color color)

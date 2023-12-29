@@ -2,7 +2,7 @@
 
 namespace AD.Mono.Pong.Engine.Core;
 
-public interface IEntity : ILoad, IUpdate, IRender
+public interface IEntity : ILoad, IUpdate, IRender, IUnload
 {
     public string Tag { get; }
     public bool IsActive { get; }

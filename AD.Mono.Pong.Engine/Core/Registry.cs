@@ -58,4 +58,12 @@ public class Registry : IRegistry
             entity.Render(spriteBatch);
         }
     }
+
+    public void Unload()
+    {
+        foreach(var entity in _entities)
+        {
+            entity.Unload();
+        }
+    }
 }
