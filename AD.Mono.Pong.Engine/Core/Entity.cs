@@ -10,16 +10,20 @@ public class Entity : IEntity
 {
     private readonly string _tag;
     private readonly List<IComponent> _components;
-    private bool _isActive = true;
+    private bool _isActive;
+    private bool _isDestoryed;
 
-    public Entity(string tag)
+    public Entity(string tag, bool isActive = true)
     {
         _tag = tag;
+        _isActive = isActive;
         _components = new();
     }
 
     public bool IsActive => _isActive;
+    public bool IsDestroyed => _isDestoryed;
     public string Tag => _tag;
+    public event Action<IEntity> OnDestroyed;
 
     public void Load()
     {
@@ -48,15 +52,44 @@ public class Entity : IEntity
         }
     }
 
+    public void Unload()
+    {
+        foreach (var component in _components)
+        {
+            if (component is IUnload unloadableComponent)
+            {
+                unloadableComponent.Unload();
+            }
+        }
+    }
+
     public void AddComponent<TComponent>(IComponent component) where TComponent : class, IComponent
     {
+        if (!HasComponent<TComponent>())
+            return;
+
         _components.Add(component);
     }
 
     public void RemoveComponent<TComponent>(IComponent component) where TComponent : class, IComponent
     {
+        if (!HasComponent<TComponent>()) 
+            return;
+
         _components.Remove(component);
     }
+
+    public bool RemoveComponent<TComponent>() where TComponent : class, IComponent
+    {
+        var component = GetComponent<TComponent>();
+        if (component == null)
+            return false;
+
+        RemoveComponent<TComponent>(component);
+        return true;
+    }
+
+    public void RemoveAllComponents() => _components.Clear();
 
     public TComponent GetComponent<TComponent>() where TComponent : class, IComponent
     {
@@ -67,19 +100,20 @@ public class Entity : IEntity
             throw new InvalidOperationException("Component does not exist on this entity!!"); ;
     }
 
+    public List<TComponent> GetComponents<TComponent>() where TComponent : class, IComponent
+    {
+        return _components.OfType<TComponent>().ToList();
+    }
+
+    public bool HasComponent<TComponent>() where TComponent : class, IComponent
+    {
+        return _components.Any(component => component is TComponent);
+    }
+
     public void Destroy()
     {
         _isActive = false;
-    }
-
-    public void Unload()
-    {
-        foreach(var component in _components)
-        {
-            if(component is IUnload unloadableComponent)
-            {
-                unloadableComponent.Unload();
-            }
-        }
+        _isDestoryed = true;
+        OnDestroyed.Invoke(this);
     }
 }
