@@ -48,8 +48,6 @@ public class TestGame : Game
         var leftWall = _entityFactory.Create(Content, _graphics, new() { X = GameBounds.Width - 2 });
         var rightWall = _entityFactory.Create(Content, _graphics, new() { X = -18 });
 
-        var leftWall1 = _entityFactory.Create(Content, _graphics, new() { X = GameBounds.Width - 2 });
-
         _registry = new(
             new List<IEntity>()
             {
@@ -66,20 +64,9 @@ public class TestGame : Game
                 new CollisionSystem(),
             });
 
-        var registry = new Registry(
-            new List<IEntity>()
-            {
-                leftWall1
-            },
-            new List<ISystem>()
-            {
-                new CollisionSystem(),
-            });
-
-        _gameStateMachine = new ();
+        _gameStateMachine = new();
         _gameStateMachine.AddStates(new List<IState> 
         { 
-            new SplashState(_gameStateMachine, registry),
             new PlayState(_gameStateMachine, _registry),
         });
     }

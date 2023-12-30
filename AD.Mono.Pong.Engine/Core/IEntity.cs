@@ -6,6 +6,8 @@ namespace AD.Mono.Pong.Engine.Core;
 
 public interface IEntity : ILoad, IUpdate, IRender, IUnload
 {
+    public string Name { get; }
+    public int Id { get; }
     public string Tag { get; }
     public bool IsActive { get; }
     public bool IsDestroyed { get; }

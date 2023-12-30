@@ -1,8 +1,6 @@
-﻿using Microsoft.Xna.Framework.Content;
-
-namespace AD.Mono.Pong.Engine.Core;
+﻿namespace AD.Mono.Pong.Engine.Core;
 
 public interface IInitialize
 {
-    public void Initialize(ContentManager contentManager);
+    public void Initialize();
 }

@@ -1,4 +1,5 @@
 ﻿using AD.Mono.Pong.Engine.Components;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -9,20 +10,28 @@ namespace AD.Mono.Pong.Engine.Core;
 public class Entity : IEntity
 {
     private readonly string _tag;
+    private readonly string _name;
+    private readonly int _id;
     private readonly List<IComponent> _components;
     private bool _isActive;
     private bool _isDestoryed;
+    private bool _isEnabled;
 
-    public Entity(string tag, bool isActive = true)
+    public Entity(string tag, bool isActive = true, bool isEnabled = true)
     {
         _tag = tag;
         _isActive = isActive;
+        _isEnabled = isEnabled;
         _components = new();
     }
 
+    public string Name => _name;
+    public int Id => _id;
     public bool IsActive => _isActive;
     public bool IsDestroyed => _isDestoryed;
+    public bool IsEnabled => _isEnabled;
     public string Tag => _tag;
+
     public event Action<IEntity> OnDestroyed;
 
     public void Load()
@@ -65,7 +74,7 @@ public class Entity : IEntity
 
     public void AddComponent<TComponent>(IComponent component) where TComponent : class, IComponent
     {
-        if (!HasComponent<TComponent>())
+        if (HasComponent<TComponent>())
             return;
 
         _components.Add(component);
@@ -93,11 +102,8 @@ public class Entity : IEntity
 
     public TComponent GetComponent<TComponent>() where TComponent : class, IComponent
     {
-        if (!typeof(IComponent).IsAssignableFrom(typeof(TComponent)))
-            throw new InvalidOperationException("TComponent must derive from IComponent!!");
-
         return _components.OfType<TComponent>().FirstOrDefault() ??
-            throw new InvalidOperationException("Component does not exist on this entity!!"); ;
+            throw new InvalidOperationException($"{typeof(TComponent)} does not exist on this entity with tag {Tag}!");
     }
 
     public List<TComponent> GetComponents<TComponent>() where TComponent : class, IComponent
@@ -114,6 +120,10 @@ public class Entity : IEntity
     {
         _isActive = false;
         _isDestoryed = true;
-        OnDestroyed.Invoke(this);
+    }
+
+    public override string ToString()
+    {
+        return $"[Entity: name: {Name}, tag: {Tag}, enabled: {IsEnabled}]";
     }
 }
