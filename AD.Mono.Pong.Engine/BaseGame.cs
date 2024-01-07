@@ -1,5 +1,4 @@
-﻿using AD.Mono.Pong.Engine.Scenes;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -14,7 +13,6 @@ public abstract class BaseGame : Game
     private readonly int _designedResolutionWidth;
     private readonly int _designedResolutionHeight;
     private float _designedResolutionAspectRatio;
-    protected SceneHandler SceneHandler;
 
     public BaseGame(int width, int height)
     {
@@ -65,12 +63,11 @@ public abstract class BaseGame : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        SceneHandler.Load();
     }
 
     protected override void UnloadContent()
     {
-        SceneHandler.Unload();
+
     }
 
     protected override void Update(GameTime gameTime)
@@ -79,7 +76,6 @@ public abstract class BaseGame : Game
             Exit();
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        SceneHandler.Update(deltaTime);
         base.Update(gameTime);
     }
 
@@ -88,7 +84,6 @@ public abstract class BaseGame : Game
         GraphicsDevice.SetRenderTarget(_renderTarget);
         GraphicsDevice.Clear(Color.Black);
         _spriteBatch.Begin();
-        SceneHandler.Render(_spriteBatch);
         _spriteBatch.End();
         _graphics.GraphicsDevice.SetRenderTarget(null);
         _graphics.GraphicsDevice.Clear(ClearOptions.Target, Color.Black, 1.0f, 0);
