@@ -48,11 +48,11 @@ public abstract class BaseState : IState
             var decisionSucceeded = transition.Decision.Decide();
             if (decisionSucceeded)
             {
-                StateMachine.TransitionToState(transition.TrueSate);
+                StateMachine.TransitionToState(transition.TrueState);
             }
             else
             {
-                StateMachine.TransitionToState(transition.FalseSate);
+                StateMachine.TransitionToState(transition.FalseState);
             }
         });
     }

@@ -1,6 +1,6 @@
-﻿using AD.Mono.Pong.Engine.Components;
-using AD.Mono.Pong.Engine.Components.Physics;
-using AD.Mono.Pong.Engine.Core;
+﻿using AD.Mono.Pong.Engine.Core.Components;
+using AD.Mono.Pong.Engine.Core.Components.Physics;
+using AD.Mono.Pong.Engine.Core.Entities;
 using Microsoft.Xna.Framework;
 using System;
 

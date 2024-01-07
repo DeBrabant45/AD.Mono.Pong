@@ -27,8 +27,8 @@ public class StateMachine : IStateMachine
 
     public void Load()
     {
-        States.ForEach(state => state.Load());
         CurrentState = States[0];
+        CurrentState.Load();
         RemainState = CurrentState;
     }
 
@@ -56,5 +56,6 @@ public class StateMachine : IStateMachine
             return;
 
         CurrentState = nextState;
+        CurrentState.Load();
     }
 }

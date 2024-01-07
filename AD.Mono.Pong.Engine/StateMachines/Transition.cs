@@ -15,9 +15,9 @@ public class Transition : ITransition
 
     public IDecision Decision => _decision;
 
-    public IState TrueSate => _trueState;
+    public IState TrueState => _trueState;
 
-    public IState FalseSate => _falseState;
+    public IState FalseState => _falseState;
 
     public void Load() => _decision.Load();
 }
