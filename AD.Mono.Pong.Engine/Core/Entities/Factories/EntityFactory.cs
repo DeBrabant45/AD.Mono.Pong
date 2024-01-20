@@ -1,4 +1,5 @@
 ﻿using AD.Mono.Pong.Engine.Core.Registries;
+using AD.Mono.Pong.Engine.Core.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
@@ -6,11 +7,17 @@ namespace AD.Mono.Pong.Engine.Core.Entities.Factories;
 
 public abstract class EntityFactory : IEntityFactory
 {
-    public IEntity Create(IRegistry owner, ContentManager content, GraphicsDeviceManager deviceManager, Vector2 position)
+    public IEntity Create(EntityCreationContext creationContext)
     {
         var entityProduction = CreateProduction();
-        return entityProduction.Produce(owner, content, deviceManager, position);
+        return entityProduction.Produce(creationContext);
     }
 
     protected abstract IEntityProduction CreateProduction();
 }
+
+public record EntityCreationContext(IRegistry Owner,
+                                    ContentManager Content,
+                                    GraphicsDeviceManager DeviceManager,
+                                    Vector2 StartPosition,
+                                    UserInputSystem UserInput = null);

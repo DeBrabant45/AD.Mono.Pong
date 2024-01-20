@@ -39,8 +39,8 @@ public class Registry : IRegistry
 
     public IEntity CreateEntity(IEntityFactory entityFactory, Vector2 position)
     {
-        var newEntity = entityFactory.Create(this, _contentManager, _graphicsDeviceManager, position);
-        _entities.Add(newEntity);
+        var newEntity = entityFactory.Create(new(this, _contentManager, _graphicsDeviceManager, position));
+        AddEntity(newEntity);
         return newEntity;
     }
 
@@ -50,8 +50,8 @@ public class Registry : IRegistry
         for (int i = 0; i < entityFactories.Count; i++)
         {
             var factory = entityFactories[i];
-            var newEntity = factory.Item1.Create(this, _contentManager, _graphicsDeviceManager, factory.Item2);
-            _entities.Add(newEntity);
+            var newEntity = factory.Item1.Create(new(this, _contentManager, _graphicsDeviceManager, factory.Item2));
+            AddEntity(newEntity);
             entities.Add(newEntity);
         }
         return entities;
@@ -63,7 +63,10 @@ public class Registry : IRegistry
     {
         for (int i = 0; i < entities.Count; i++)
         {
-            _entities.Add(entities[i]);
+            if (entities[i] is null)
+                continue;
+
+            AddEntity(entities[i]);
         }
     }
 
@@ -73,8 +76,29 @@ public class Registry : IRegistry
     {
         for (int i = 0; i < entities.Count; i++)
         {
-            _entities.Remove(entities[i]);
+            if (entities[i] is null)
+                continue;
+
+            RemoveEntity(entities[i]);
         }
+    }
+
+    public void RemoveEntities(IList<int> ids)
+    {
+        var foundEntities = FindEntitiesById(ids);
+        if (foundEntities.Count <= 0)
+            return;
+
+        RemoveEntities(foundEntities);
+    }
+
+    public void RemoveEntity(int id)
+    {
+        var entity = FindEntityById(id);
+        if (entity is null)
+            return;
+      
+        RemoveEntity(entity);
     }
 
     public IEntity FindEntityByName(string name)
@@ -116,6 +140,22 @@ public class Registry : IRegistry
         return null;
     }
 
+    public IList<IEntity> FindEntitiesById(IList<int> ids)
+    {
+        var entities = new List<IEntity>();
+        for (int i = 0; i < _entities.Count; i++)
+        {
+            for (int j = 0; j < ids.Count; j++)
+            {
+                if (_entities[i].Id != ids[j])
+                    continue;
+
+                entities.Add(_entities[i]);
+            }
+        }
+        return entities;
+    }
+
     public void DestroyAllEntities()
     {
         for (int i = 0; i < _entities.Count; i++)
@@ -125,6 +165,17 @@ public class Registry : IRegistry
     }
 
     public void AddSystem(ISystem system) => _systems.Add(system);
+
+    public void AddSystems(IList<ISystem> systems)
+    {
+        for(int i = 0;i < systems.Count;i++)
+        {
+            if (systems[i] is null)
+                continue;
+
+            AddSystem(systems[i]);
+        }
+    }
 
     public void RemoveSystem(ISystem system) => _systems.Remove(system);
 
@@ -146,7 +197,7 @@ public class Registry : IRegistry
     {
         for (int i = 0; i < _systems.Count; i++)
         {
-            _systems[i].Load(this);
+            _systems[i].Load();
         }
     }
 
@@ -168,9 +219,9 @@ public class Registry : IRegistry
 
     public void Update(float deltaTime)
     {
-
         UpdateEntities(deltaTime);
         UpdateSystems(deltaTime);
+        RemoveDestroyedEntities();
     }
 
     private void UpdateEntities(float deltaTime)
@@ -186,6 +237,17 @@ public class Registry : IRegistry
         for (int i = 0; i < _systems.Count; i++)
         {
             _systems[i].Update(deltaTime);
+        }
+    }
+
+    private void RemoveDestroyedEntities()
+    {
+        for (int i = 0; i < _entities.Count; i++)
+        {
+            if (!_entities[i].IsDestroyed)
+                continue;
+
+            RemoveEntity(_entities[i]);
         }
     }
 }

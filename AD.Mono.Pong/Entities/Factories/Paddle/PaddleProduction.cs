@@ -12,13 +12,13 @@ namespace AD.Mono.Pong.Entities.Factories.Paddle;
 
 public class PaddleProduction : IEntityProduction
 {
-    public IEntity Produce(IRegistry owner, ContentManager content, GraphicsDeviceManager deviceManager, Vector2 position)
+    public IEntity Produce(EntityCreationContext creationContext)
     {
         var paddle = new Entity("Paddle", "Paddle");
-        paddle.AddComponent<Transform>(new Transform(paddle, position, new() { X = 20, Y = 100 }));
+        paddle.AddComponent<Transform>(new Transform(paddle, creationContext.StartPosition, new() { X = 20, Y = 100 }));
         paddle.AddComponent<Rigidbody>(new Rigidbody(paddle));
-        paddle.AddComponent<PaddleMovement>(new PaddleMovement(paddle));
-        paddle.AddComponent<Sprite>(new Sprite(paddle, content, deviceManager, "paddle"));
+        paddle.AddComponent<Sprite>(new Sprite(paddle, creationContext.Content, creationContext.DeviceManager, "paddle"));
+        paddle.AddComponent<UserMovement>(new UserMovement(paddle, creationContext.UserInput));
 
         return paddle;
     }

@@ -9,9 +9,14 @@ public class CollisionSystem : ISystem
 {
     private IRegistry _registry;
 
-    public void Load(IRegistry registry)
+    public CollisionSystem(IRegistry registry)
     {
         _registry = registry;
+    }
+
+    public void Load()
+    {
+
     }
 
     public void Update(float deltaTime)

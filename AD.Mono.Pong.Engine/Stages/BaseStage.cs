@@ -70,14 +70,12 @@ public abstract class BaseStage : IStage
         for (int i = 0; i < Conditions.Count; i++)
         {
             var decisionSucceeded = Conditions[i].Decision.Decide();
-            if (decisionSucceeded)
-            {
-                Manager.GoToStage(Conditions[i].TrueStage);
-            }
-            else 
+            if (!decisionSucceeded)
             {
                 Manager.GoToStage(Conditions[i].FalseStage);
             }
+            
+            Manager.GoToStage(Conditions[i].TrueStage);
         }
     }
 }

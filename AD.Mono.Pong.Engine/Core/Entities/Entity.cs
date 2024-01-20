@@ -15,7 +15,7 @@ public class Entity : IEntity
     private readonly int _id;
     private readonly List<IComponent> _components;
     private bool _isActive;
-    private bool _isDestoryed;
+    private bool _isDestroyed;
     private bool _isEnabled;
 
     public Entity(string tag, string name, bool isActive = true, bool isEnabled = true)
@@ -34,7 +34,7 @@ public class Entity : IEntity
     public int Id => _id;
     public string Name => _name;
     public bool IsActive => _isActive;
-    public bool IsDestroyed => _isDestoryed;
+    public bool IsDestroyed => _isDestroyed;
     public bool IsEnabled => _isEnabled;
     public string Tag => _tag;
 
@@ -50,6 +50,9 @@ public class Entity : IEntity
 
     public void Update(float deltaTime)
     {
+        if (!_isActive)
+            return;
+
         for (int i = 0; i < _components.Count; i++)
         {
             _components[i].Update(deltaTime);
@@ -58,6 +61,9 @@ public class Entity : IEntity
 
     public void Render(SpriteBatch spriteBatch)
     {
+        if (!_isActive)
+            return;
+
         foreach (var component in _components)
         {
             if (component is IRender renderableComponent)
@@ -125,11 +131,11 @@ public class Entity : IEntity
     public void Destroy()
     {
         _isActive = false;
-        _isDestoryed = true;
+        _isDestroyed = true;
     }
 
     public override string ToString()
     {
-        return $"[Entity: name: {Name}, tag: {Tag}, enabled: {IsEnabled}]";
+        return $"[Entity: name: {Name}, tag: {Tag}, enabled: {IsEnabled}, destroyed: {IsDestroyed}, active: {IsActive}]";
     }
 }

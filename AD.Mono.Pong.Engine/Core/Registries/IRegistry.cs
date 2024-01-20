@@ -25,5 +25,6 @@ public interface IRegistry : ILoad, IUpdate, IRender, IUnload
     public IEntity FindEntityById(int id);
     public void DestroyAllEntities();
     public void AddSystem(ISystem system);
+    public void AddSystems(IList<ISystem> systems);
     public void RemoveSystem(ISystem system);
 }
