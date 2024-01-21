@@ -1,5 +1,4 @@
-﻿using AD.Mono.Pong.Engine.Core.Registries;
-using AD.Mono.Pong.Engine.Core.Systems;
+﻿using AD.Mono.Pong.Engine.Core.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
@@ -16,7 +15,8 @@ public abstract class EntityFactory : IEntityFactory
     protected abstract IEntityProduction CreateProduction();
 }
 
-public record EntityCreationContext(IRegistry Registry,
+public record EntityCreationContext(IEntityRegistry EntityRegistry,
+                                    ISystemRegistry SystemRegistry,
                                     ContentManager Content,
                                     GraphicsDeviceManager DeviceManager,
                                     Vector2 StartPosition);

@@ -1,4 +1,6 @@
-﻿using AD.Mono.Pong.Engine.Core.Registries;
+﻿using AD.Mono.Pong.Engine.Core.Entities;
+using AD.Mono.Pong.Engine.Core.Registries;
+using AD.Mono.Pong.Engine.Core.Systems;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 
@@ -27,7 +29,6 @@ public abstract class BaseStage : IStage
     // ToDo: Add ability to pass persistent entities to next Stage
     // ToDo: Add Stage Components
     // ToDo: Look into UI Components
-    // ToDo: Look into adding Entity/System Repo
     // ToDo: Add Stage factories 
     protected abstract void AddConditions();
 

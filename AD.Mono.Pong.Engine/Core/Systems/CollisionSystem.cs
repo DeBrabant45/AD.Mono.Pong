@@ -1,17 +1,16 @@
 ﻿using AD.Mono.Pong.Engine.Core.Components.Physics;
 using AD.Mono.Pong.Engine.Core.Entities;
-using AD.Mono.Pong.Engine.Core.Registries;
 using System.Collections.Generic;
 
 namespace AD.Mono.Pong.Engine.Core.Systems;
 
 public class CollisionSystem : ISystem
 {
-    private IRegistry _registry;
+    private IEntityRegistry _entityRegistry;
 
-    public CollisionSystem(IRegistry registry)
+    public CollisionSystem(IEntityRegistry entityRegistry)
     {
-        _registry = registry;
+        _entityRegistry = entityRegistry;
     }
 
     public void Load()
@@ -21,7 +20,7 @@ public class CollisionSystem : ISystem
 
     public void Update(float deltaTime)
     {
-        CheckCollisions(_registry.Entities);
+        CheckCollisions(_entityRegistry.Entities);
     }
 
     public void CheckCollisions(IList<IEntity> entities)

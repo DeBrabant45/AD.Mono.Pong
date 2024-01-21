@@ -9,7 +9,7 @@ public class PlayStage : BaseStage
 {
     private const string StageName = "Play Stage";
 
-    public PlayStage(int id, IRegistry registry, IStageManager stageManager) 
+    public PlayStage(int id, IRegistry registry, IStageManager stageManager)
         : base(id, StageName, registry, stageManager)
     {
 
@@ -18,7 +18,7 @@ public class PlayStage : BaseStage
     protected override void AddConditions()
     {
         Conditions = new List<IStageCondition>
-        { 
+        {
             new StageCondition(new TestDecision(), Manager.FindStage<PlayStage>(), Manager.FindStage<PlayStage>()),
         };
     }

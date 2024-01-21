@@ -9,19 +9,21 @@ namespace AD.Mono.Pong.Components;
 public class UserMovement : BaseComponent
 {
     private float _movementSpeed;
+    private ISystemRegistry _systemRegistry;
     private Rigidbody _rigidbody;
     private UserInputSystem _userInput;
 
-    public UserMovement(IEntity owner) 
+    public UserMovement(IEntity owner, ISystemRegistry systemRegistry) 
         : base(owner)
     {
         _movementSpeed = 300f;
+        _systemRegistry = systemRegistry;
     }
 
     public override void Load()
     {
         _rigidbody = Owner.GetComponent<Rigidbody>();
-        _userInput = Owner.Registry.FindSystem<UserInputSystem>();
+        _userInput = _systemRegistry.GetSystem<UserInputSystem>();
     }
 
     public override void Update(float deltaTime)

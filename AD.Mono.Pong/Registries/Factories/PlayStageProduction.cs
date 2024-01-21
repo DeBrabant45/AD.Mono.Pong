@@ -20,27 +20,28 @@ public class PlayStageProduction : IRegistryProduction
     public IRegistry Produce(ContentManager content, GraphicsDeviceManager deviceManager)
     {
         var name = "Play Stage Registry";
-        var registry = new Registry(name, content, deviceManager);
+        var systemRegistry = new SystemRegistry();
+        var entityRegistry = new EntityRegistry(content, deviceManager, systemRegistry);
         var userInputSystem = new UserInputSystem(PlayerIndex.One);
 
         _entityFactory = new PaddleFactory();
 
         var playerPaddle = _entityFactory.Create(
-            new(registry, content, deviceManager, 
+            new(entityRegistry, systemRegistry, content, deviceManager,
             new() { X = 0 + 10, Y = GameBounds.Height / 2 }));
 
         _entityFactory = new BallFactory();
-        var ball = _entityFactory.Create(new(registry, content, deviceManager, new() { X = GameBounds.Width / 2, Y = 200 }));
+        var ball = _entityFactory.Create(new(entityRegistry, systemRegistry, content, deviceManager, new() { X = GameBounds.Width / 2, Y = 200 }));
 
         _entityFactory = new BoundsFactory();
-        var floor = _entityFactory.Create(new(registry, content, deviceManager, new() { Y = GameBounds.Height - 10 }));
-        var ceiling = _entityFactory.Create(new(registry, content, deviceManager, new() { Y = -90 }));
+        var floor = _entityFactory.Create(new(entityRegistry, systemRegistry, content, deviceManager, new() { Y = GameBounds.Height - 10 }));
+        var ceiling = _entityFactory.Create(new(entityRegistry, systemRegistry, content, deviceManager, new() { Y = -90 }));
 
         _entityFactory = new WallFactory();
-        var leftWall = _entityFactory.Create(new(registry, content, deviceManager, new() { X = GameBounds.Width - 2 }));
-        var rightWall = _entityFactory.Create(new(registry, content, deviceManager, new() { X = -18 }));
+        var leftWall = _entityFactory.Create(new(entityRegistry, systemRegistry, content, deviceManager, new() { X = GameBounds.Width - 2 }));
+        var rightWall = _entityFactory.Create(new(entityRegistry,systemRegistry, content, deviceManager, new() { X = -18 }));
 
-        registry.AddEntities(new List<IEntity>
+        entityRegistry.AddEntities(new List<IEntity>
         {
             playerPaddle,
             floor, 
@@ -49,12 +50,12 @@ public class PlayStageProduction : IRegistryProduction
             leftWall, 
             rightWall
         });
-        registry.AddSystems(new List<ISystem>
+        systemRegistry.AddSystems(new List<ISystem>
         {
-            new CollisionSystem(registry),
+            new CollisionSystem(entityRegistry),
             userInputSystem
         });
 
-        return registry;
+        return new Registry(name, entityRegistry, systemRegistry);
     }
 }
