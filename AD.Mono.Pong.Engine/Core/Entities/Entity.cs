@@ -1,5 +1,6 @@
 ﻿using AD.Mono.Pong.Engine.Core.Components;
 using AD.Mono.Pong.Engine.Core.LifeCycles;
+using AD.Mono.Pong.Engine.Core.Registries;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -14,13 +15,15 @@ public class Entity : IEntity
     private readonly string _name;
     private readonly int _id;
     private readonly List<IComponent> _components;
+    private IRegistry _registry;
     private bool _isActive;
     private bool _isDestroyed;
     private bool _isEnabled;
 
-    public Entity(string tag, string name, bool isActive = true, bool isEnabled = true)
+    public Entity(IRegistry registry, string tag, string name, bool isActive = true, bool isEnabled = true)
     {
         _id = _idGenerator++;
+        _registry = registry;
         _tag = tag;
         _name = name;
         _isActive = isActive;
@@ -37,8 +40,11 @@ public class Entity : IEntity
     public bool IsDestroyed => _isDestroyed;
     public bool IsEnabled => _isEnabled;
     public string Tag => _tag;
+    public IRegistry Registry => _registry;
 
     public event Action<IEntity> OnDestroyed;
+
+    public void TransferOwnership(IRegistry registry) => _registry = registry;
 
     public void Load()
     {

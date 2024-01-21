@@ -16,8 +16,7 @@ public abstract class EntityFactory : IEntityFactory
     protected abstract IEntityProduction CreateProduction();
 }
 
-public record EntityCreationContext(IRegistry Owner,
+public record EntityCreationContext(IRegistry Registry,
                                     ContentManager Content,
                                     GraphicsDeviceManager DeviceManager,
-                                    Vector2 StartPosition,
-                                    UserInputSystem UserInput = null);
+                                    Vector2 StartPosition);

@@ -27,4 +27,5 @@ public interface IRegistry : ILoad, IUpdate, IRender, IUnload
     public void AddSystem(ISystem system);
     public void AddSystems(IList<ISystem> systems);
     public void RemoveSystem(ISystem system);
+    public TSystem FindSystem<TSystem>() where TSystem : class, ISystem;
 }

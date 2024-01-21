@@ -10,7 +10,7 @@ public class BoundsProduction : IEntityProduction
 {
     public IEntity Produce(EntityCreationContext context)
     {
-        var bound = new Entity("Bounds", "Bound");
+        var bound = new Entity(context.Registry, "Bounds", "Bound");
         bound.AddComponent<Transform>(new Transform(bound, context.StartPosition, new() { X = GameBounds.Width, Y = 100 }));
         bound.AddComponent<Rigidbody>(new Rigidbody(bound));
         bound.AddComponent<Sprite>(new Sprite(bound, context.Content, context.DeviceManager, "Bounds"));

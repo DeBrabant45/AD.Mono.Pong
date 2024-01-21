@@ -10,7 +10,7 @@ public class BallProduction : IEntityProduction
 {
     public IEntity Produce(EntityCreationContext context)
     {
-        var ball = new Entity("Ball", "Ball");
+        var ball = new Entity(context.Registry, "Ball", "Ball");
         ball.AddComponent<Transform>(new Transform(ball, context.StartPosition, new() { X = 10, Y = 10 }));
         ball.AddComponent<Rigidbody>(new Rigidbody(ball));
         ball.AddComponent<BallMovement>(new BallMovement(ball));

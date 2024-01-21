@@ -27,8 +27,7 @@ public class PlayStageProduction : IRegistryProduction
 
         var playerPaddle = _entityFactory.Create(
             new(registry, content, deviceManager, 
-            new() { X = 0 + 10, Y = GameBounds.Height / 2 },
-            userInputSystem));
+            new() { X = 0 + 10, Y = GameBounds.Height / 2 }));
 
         _entityFactory = new BallFactory();
         var ball = _entityFactory.Create(new(registry, content, deviceManager, new() { X = GameBounds.Width / 2, Y = 200 }));

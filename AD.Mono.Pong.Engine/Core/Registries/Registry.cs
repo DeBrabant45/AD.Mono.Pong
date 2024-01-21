@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AD.Mono.Pong.Engine.Core.Registries;
 
@@ -178,6 +179,12 @@ public class Registry : IRegistry
     }
 
     public void RemoveSystem(ISystem system) => _systems.Remove(system);
+
+    public TSystem FindSystem<TSystem>() where TSystem : class, ISystem
+    {
+        return _systems.OfType<TSystem>().FirstOrDefault() ??
+            throw new InvalidOperationException($"{typeof(TSystem)} does not exist on systems list!");
+    }
 
     public void Load()
     {
