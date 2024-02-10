@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace AD.Mono.Pong;
+
 public class TestGame : Game
 {
     private readonly GraphicsDeviceManager _graphics;
@@ -46,8 +47,11 @@ public class TestGame : Game
 
     protected override void Update(GameTime gameTime)
     {
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed 
+            || Keyboard.GetState().IsKeyDown(Keys.Escape))
+        {
             Exit();
+        }
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         _stageManager.Update(deltaTime);

@@ -4,7 +4,7 @@ using AD.Mono.Pong.Engine.Core.Systems;
 
 namespace AD.Mono.Pong.Engine.Core.Registries;
 
-public interface IRegistry : ILoad, IUpdate, IRender, IUnload
+public interface IRegistry : ILoad, IUpdate, IRender, IUnload, IReset
 {
     public string Name { get; }
     public int Id { get; }

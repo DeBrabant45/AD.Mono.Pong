@@ -36,6 +36,11 @@ public class Rigidbody : BaseComponent
     public override void Load()
     {
         _transform = Owner.GetComponent<Transform>();
+        SetStartPosition();
+    }
+
+    public void SetStartPosition()
+    {
         _body = new()
         {
             X = (int)_transform.Position.X,
@@ -81,6 +86,11 @@ public class Rigidbody : BaseComponent
     public override void Update(float deltaTime)
     {
         _transform.Position = new Vector2(_body.X, _body.Y);
+    }
+
+    public override void Reset()
+    {
+        SetStartPosition();
     }
 
     public void OnCollisionTrigger(IEntity otherEntity)

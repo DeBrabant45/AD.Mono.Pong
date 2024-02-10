@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace AD.Mono.Pong.Engine.Core.Entities;
 
-public interface IEntity : ILoad, IUpdate, IRender, IUnload
+public interface IEntity : ILoad, IUpdate, IRender, IUnload, IReset
 {
     public string Name { get; }
     public int Id { get; }

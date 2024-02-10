@@ -143,4 +143,15 @@ public class Entity : IEntity
     {
         return $"[Entity: name: {Name}, tag: {Tag}, enabled: {IsEnabled}, destroyed: {IsDestroyed}, active: {IsActive}]";
     }
+
+    public void Reset()
+    {
+        _isActive = true;
+        _isDestroyed = false;
+        _isEnabled = true;
+        for (int i = 0; i < _components.Count; i++)
+        {
+            _components[i].Reset();
+        }
+    }
 }

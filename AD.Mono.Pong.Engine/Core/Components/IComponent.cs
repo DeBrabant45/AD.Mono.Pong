@@ -2,7 +2,7 @@
 
 namespace AD.Mono.Pong.Engine.Core.Components;
 
-public interface IComponent : ILoad, IUpdate
+public interface IComponent : ILoad, IUpdate, IReset
 {
 
 }

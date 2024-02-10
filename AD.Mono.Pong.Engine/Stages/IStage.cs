@@ -2,7 +2,7 @@
 
 namespace AD.Mono.Pong.Engine.Stages;
 
-public interface IStage : ILoad, IUnload, IUpdate, IRender
+public interface IStage : ILoad, IUnload, IUpdate, IRender, IReset
 {
     public string Name { get; }
     public int Id { get; }

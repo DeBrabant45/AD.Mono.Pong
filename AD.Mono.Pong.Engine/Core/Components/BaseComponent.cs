@@ -13,5 +13,7 @@ public abstract class BaseComponent : IComponent
 
     public virtual void Load() { }
 
+    public virtual void Reset() { }
+
     public virtual void Update(float deltaTime) { }
 }

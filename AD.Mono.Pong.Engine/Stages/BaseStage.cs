@@ -1,6 +1,4 @@
-﻿using AD.Mono.Pong.Engine.Core.Entities;
-using AD.Mono.Pong.Engine.Core.Registries;
-using AD.Mono.Pong.Engine.Core.Systems;
+﻿using AD.Mono.Pong.Engine.Core.Registries;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 
@@ -10,9 +8,9 @@ public abstract class BaseStage : IStage
 {
     private readonly int _id;
     private readonly string _name;
-    protected IList<IStageCondition> Conditions;
     protected readonly IRegistry Registry;
     protected readonly IStageManager Manager;
+    protected IList<IStageCondition> Conditions;
 
     public BaseStage(int id, string name, IRegistry registry, IStageManager stageManager)
     {
@@ -59,6 +57,9 @@ public abstract class BaseStage : IStage
 
     public virtual void Update(float deltaTime)
     {
+        if (PauseGame.IsPaused)
+            return;
+
         Registry.Update(deltaTime);
         CheckConditions();
     }
@@ -79,4 +80,17 @@ public abstract class BaseStage : IStage
             Manager.GoToStage(Conditions[i].TrueStage);
         }
     }
+
+    public void Reset()
+    {
+        Registry.Reset();
+    }
+}
+
+public class PauseGame
+{
+    private static bool _isPaused;
+    public static bool IsPaused => _isPaused;
+    public static void Pause() => _isPaused = true;
+    public static void Unpause() => _isPaused = false;
 }

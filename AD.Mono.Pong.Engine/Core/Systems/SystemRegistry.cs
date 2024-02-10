@@ -34,7 +34,7 @@ public class SystemRegistry : ISystemRegistry
             throw new InvalidOperationException($"{typeof(TSystem)} does not exist on systems list!");
     }
 
-    public void LoadSystems()
+    public void Load()
     {
         for (int i = 0; i < _systems.Count; i++)
         {
@@ -42,7 +42,7 @@ public class SystemRegistry : ISystemRegistry
         }
     }
 
-    public void UpdateSystems(float deltaTime)
+    public void Update(float deltaTime)
     {
         for (int i = 0; i < _systems.Count; i++)
         {

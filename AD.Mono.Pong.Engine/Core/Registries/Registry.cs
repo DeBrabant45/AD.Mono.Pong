@@ -27,13 +27,18 @@ public class Registry : IRegistry
 
     public void Load()
     {
-        _entityRegistry.LoadEntities();
-        _systemRegistry.LoadSystems();
+        _entityRegistry.Load();
+        _systemRegistry.Load();
     }
 
     public void Render(SpriteBatch spriteBatch)
     {
-        _entityRegistry.RenderEntities(spriteBatch);
+        _entityRegistry.Render(spriteBatch);
+    }
+
+    public void Reset()
+    {
+        _entityRegistry.Reset();
     }
 
     public void Unload()
@@ -43,8 +48,8 @@ public class Registry : IRegistry
 
     public void Update(float deltaTime)
     {
-        _entityRegistry.UpdateEntities(deltaTime);
-        _systemRegistry.UpdateSystems(deltaTime);
         _entityRegistry.RemoveDestroyedEntities();
+        _entityRegistry.Update(deltaTime);
+        _systemRegistry.Update(deltaTime);
     }
 }

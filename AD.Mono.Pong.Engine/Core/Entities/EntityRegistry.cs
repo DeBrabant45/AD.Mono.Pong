@@ -11,6 +11,7 @@ namespace AD.Mono.Pong.Engine.Core.Entities;
 public class EntityRegistry : IEntityRegistry
 {
     private readonly IList<IEntity> _entities;
+    private readonly IList<IEntity> _removedEntities;
     private readonly ContentManager _contentManager;
     private readonly GraphicsDeviceManager _graphicsDeviceManager;
     private readonly SystemRegistry _systemRegistry;
@@ -18,6 +19,7 @@ public class EntityRegistry : IEntityRegistry
     public EntityRegistry(ContentManager contentManager, GraphicsDeviceManager graphicsDevice, SystemRegistry systemRegistry)
     {
         _entities = new List<IEntity>();
+        _removedEntities = new List<IEntity>();
         _contentManager = contentManager;
         _graphicsDeviceManager = graphicsDevice;
         _systemRegistry = systemRegistry;
@@ -58,7 +60,11 @@ public class EntityRegistry : IEntityRegistry
         }
     }
 
-    public void RemoveEntity(IEntity entity) => _entities.Remove(entity);
+    public void RemoveEntity(IEntity entity)
+    {
+        _entities.Remove(entity);
+        _removedEntities.Add(entity);
+    }
 
     public void RemoveEntities(IList<IEntity> entities)
     {
@@ -160,10 +166,11 @@ public class EntityRegistry : IEntityRegistry
         for (int i = 0; i < _entities.Count; i++)
         {
             _entities[i].Destroy();
+            _removedEntities.Add(_entities[i]);
         }
     }
 
-    public void LoadEntities()
+    public void Load()
     {
         for (int i = 0; i < _entities.Count; i++)
         {
@@ -171,7 +178,7 @@ public class EntityRegistry : IEntityRegistry
         }
     }
 
-    public void UpdateEntities(float deltaTime)
+    public void Update(float deltaTime)
     {
         for (int i = 0; i < _entities.Count; i++)
         {
@@ -179,18 +186,33 @@ public class EntityRegistry : IEntityRegistry
         }
     }
 
-    public void RenderEntities(SpriteBatch spriteBatch)
+    public void Render(SpriteBatch spriteBatch)
     {
         for (int i = 0; i < _entities.Count; i++)
         {
             _entities[i].Render(spriteBatch);
         }
     }
+
     public void Unload()
     {
         for (int i = 0; i < _entities.Count; i++)
         {
             _entities[i].Unload();
         }
+    }
+
+    public void Reset()
+    {
+        ReAddRemovedEntities();
+        for (int i = 0; i < _entities.Count; i++)
+        {
+            _entities[i].Reset();
+        }
+    }
+
+    private void ReAddRemovedEntities()
+    {
+        AddEntities(_removedEntities);
     }
 }
